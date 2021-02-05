@@ -76,36 +76,62 @@
 	}
 #else
 	#include <sys/soundcard.h>
+	#include <alsa/asoundlib.h>
+	#include <alsa/mixer.h>
 	
-	const char *
-	vol_perc(const char *card)
+	const char*	
+	vol_perc()
 	{
-		size_t i;
-		int v, afd, devmask;
-		char *vnames[] = SOUND_DEVICE_NAMES;
+	  const char* MIXER = "Master";
 
-		if ((afd = open(card, O_RDONLY | O_NONBLOCK)) < 0) {
-			warn("open '%s':", card);
-			return NULL;
+	  float vol = 0;
+	  long pmin, pmax, pvol;
+	  int isnotmuted = 0;
+	
+	  snd_mixer_t *handle;
+	  snd_mixer_selem_id_t *sid;
+	  snd_mixer_elem_t *elem;
+	  snd_mixer_selem_id_alloca(&sid);
+
+	  if(snd_mixer_open(&handle, 0) < 0)
+	    return 0;
+
+	  if(snd_mixer_attach(handle, "default") < 0
+	     || snd_mixer_selem_register(handle, NULL, NULL) < 0
+	     || snd_mixer_load(handle) > 0)
+	    {
+	      snd_mixer_close(handle);
+	      return 0;
+	    }
+
+	  for(elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem))
+	    {
+	      snd_mixer_selem_get_id(elem, sid); 
+	      if(!strcmp(snd_mixer_selem_id_get_name(sid), MIXER))
+		{
+		  
+		  snd_mixer_selem_get_playback_switch(elem, (snd_mixer_selem_channel_id_t) 0,&isnotmuted);	
+		  snd_mixer_selem_get_playback_volume_range(elem, &pmin, &pmax);
+		  snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_MONO, &pvol);
+		  vol = ((float)pvol / (float)(pmax - pmin)) * 100;
+		  break;
 		}
+	    }
 
-		if (ioctl(afd, (int)SOUND_MIXER_READ_DEVMASK, &devmask) < 0) {
-			warn("ioctl 'SOUND_MIXER_READ_DEVMASK':");
-			close(afd);
-			return NULL;
-		}
-		for (i = 0; i < LEN(vnames); i++) {
-			if (devmask & (1 << i) && !strcmp("vol", vnames[i])) {
-				if (ioctl(afd, MIXER_READ(i), &v) < 0) {
-					warn("ioctl 'MIXER_READ(%ld)':", i);
-					close(afd);
-					return NULL;
-				}
-			}
-		}
-
-		close(afd);
-
-		return bprintf("%d", v & 0xff);
+	  snd_mixer_close(handle);
+	  int tmp = (int)vol;
+	  if(tmp%10 == 9)
+		  tmp+=1;
+	  if(isnotmuted){
+		if (tmp <= 25)
+			return bprintf("󰕿 %d%%", tmp);
+	  	else if (tmp <= 75)
+			return bprintf("󰖀 %d%%", tmp);
+	  	else if (tmp <= 100)  
+			return bprintf("󰕾 %d%%", tmp);
+		else return bprintf("^c#7f0d07^󰕾 %d%%", tmp);
+	  } else
+	  	return bprintf("󰖁 %d%%", tmp);
 	}
+	
 #endif

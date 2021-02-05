@@ -20,7 +20,7 @@
 		return fmt_human(freq * 1000, 1000);
 	}
 
-	const char *
+	const int
 	cpu_perc(void)
 	{
 		static long double a[7];
@@ -31,22 +31,38 @@
 		if (pscanf("/proc/stat", "%*s %Lf %Lf %Lf %Lf %Lf %Lf %Lf",
 		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5], &a[6])
 		    != 7) {
-			return NULL;
+			return 0;
 		}
 		if (b[0] == 0) {
-			return NULL;
+			return 0;
 		}
 
 		sum = (b[0] + b[1] + b[2] + b[3] + b[4] + b[5] + b[6]) -
 		      (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6]);
 
 		if (sum == 0) {
-			return NULL;
+			return 0;
 		}
 
-		return bprintf("%d", (int)(100 *
-		               ((b[0] + b[1] + b[2] + b[5] + b[6]) -
-		                (a[0] + a[1] + a[2] + a[5] + a[6])) / sum));
+		const int perc = (int)(100 *((b[0] + b[1] + b[2] + b[5] + b[6]) - (a[0] + a[1] + a[2] + a[5] + a[6])) / sum);
+
+		return perc;
+	}
+
+	const char *
+	cpu_print(void)
+	{
+		const int perc = cpu_perc();
+		int color = 0;
+		if(perc <= 25)
+			color = 0x00e673;
+		else if (perc <= 50)
+			color = 0xf0f000;
+		else if (perc <= 75)
+			color = 0x700000;
+		else color = 0xff000;
+		
+		return bprintf("^c#%06x^󰻠 %2d%% ", color, perc);
 	}
 #elif defined(__OpenBSD__)
 	#include <sys/param.h>

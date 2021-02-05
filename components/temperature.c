@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <stddef.h>
+#include <stdio.h>
 
 #include "../util.h"
 
@@ -15,8 +16,12 @@
 		if (pscanf(file, "%ju", &temp) != 1) {
 			return NULL;
 		}
-
-		return bprintf("%ju", temp / 1000);
+		temp /= 1000;
+		if(temp < 50)
+			return bprintf("^c#00ff00^ %ju", temp);
+		else if(temp < 60)
+			return bprintf("^c#ffff00^ %ju", temp);
+		else  return bprintf("^c#a00000^ %ju", temp);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdio.h>

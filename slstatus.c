@@ -17,7 +17,7 @@ struct arg {
 	const char *args;
 };
 
-char buf[1024];
+char buf[2048];
 static int done;
 static Display *dpy;
 
@@ -55,6 +55,7 @@ main(int argc, char *argv[])
 	char status[MAXLEN];
 	const char *res;
 
+	srand(time(NULL));
 	sflag = 0;
 	ARGBEGIN {
 		case 's':

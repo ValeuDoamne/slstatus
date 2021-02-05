@@ -20,6 +20,6 @@ backlight(const char *dsp)
 	if(pscanf(path, "%d", &perc) != 1){
 		return NULL;
 	}
-	return bprintf("%d", (int)((float)(perc/255.0*100))); // casting feng shui (just get something between 0 100)
+	return bprintf("%d", (int)((float)(perc/255.0*100))/10*10); // casting feng shui (just get something between 0 100)
 }
 

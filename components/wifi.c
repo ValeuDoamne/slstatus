@@ -115,11 +115,11 @@
 		pwr = strtol(power, NULL, 10);
 
 		if (pwr < 30)
-			return bprintf("[  (%s) ] ", essid);
+			return bprintf(" 󰤟 (%s) ", essid);
 		else if (pwr < 70)
-			return bprintf("[  (%s) ] ", essid);
+			return bprintf(" 󰤢 (%s) ", essid);
 		else if (pwr <= 100)
-			return bprintf("[  (%s) ] ", essid);
+			return bprintf(" 󰤨 (%s) ", essid);
 		return bprintf("");
 	}
 

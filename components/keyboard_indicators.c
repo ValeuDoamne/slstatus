@@ -45,11 +45,11 @@ keyboard_indicators(const char *fmt)
 	}
 	buf[n] = 0;
 	if (!strncmp(buf, "cn", 2)) {
-		return bprintf("[ Caps Lock | Num Lock ] ");
+		return bprintf("^c#000000^^b#00ff00^[ Caps Lock | Num Lock ] ^d^");
 	} else if (!strncmp(buf,"c", 1)) {
-		return bprintf("[ Caps Lock ] ");
+		return bprintf("^c#000000^^b#00ff00^[ Caps Lock ] ^d^");
 	} else if (!strncmp(buf, "n", 1)) {
-		return bprintf("[ Num Lock ] ");
+		return bprintf("^c#000000^^b#00ff00^[ Num Lock ] ^d^");
 	}
 	return buf; // Just return Nothing
 }

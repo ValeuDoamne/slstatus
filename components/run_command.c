@@ -26,5 +26,5 @@ run_command(const char *cmd)
 		p[0] = '\0';
 	}
 
-	return buf[0] ? buf : NULL;
+	return buf[0] ? buf : bprintf("AA");
 }

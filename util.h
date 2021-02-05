@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdint.h>
 
-extern char buf[1024];
+extern char buf[2048];
 
 #define LEN(x) (sizeof (x) / sizeof *(x))
 

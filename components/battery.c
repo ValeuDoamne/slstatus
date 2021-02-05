@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdio.h>
 #include <string.h>
+#include <libnotify/notify.h>
 
 #include "../util.h"
 
@@ -8,6 +9,21 @@
 	#include <limits.h>
 	#include <stdint.h>
 	#include <unistd.h>
+
+
+static int sendlow = 0;
+static int sendhigh = 0;
+
+
+	void
+	send_notification(const char *title,const char *body,const char *icon){
+		notify_init("Notification");
+		NotifyNotification *not = notify_notification_new(title, body, icon);
+		notify_notification_show(not, NULL);
+		g_object_unref(G_OBJECT(not));
+		notify_uninit();
+	}
+
 
 	static const char *
 	pick(const char *bat, const char *f1, const char *f2, char *path,
@@ -39,14 +55,33 @@
 		if (pscanf(path, "%d", &perc) != 1) {
 			return NULL;
 		}
-		if(perc >= 97)
-			return bprintf(" ");
-		else if(perc <= 25)
-			return bprintf(" ");
-		else if(perc <= 60)
-			return bprintf(" ");
-		else if(perc <= 97)
-			return bprintf(" ");
+		if (perc >= 97) {
+			if (!sendhigh){
+				sendhigh = 1;
+				send_notification("", "Battery is full", "");
+			}
+			return bprintf("^r0,7,2,4^^r2,4,22,10^^c#000000^^r3,5,20,8^^c#00ff00^^r3,5,20,8^^d^^f24^");
+		}
+		else if (perc <= 10) {
+			if (sendlow == 0){
+				sendlow = 1;
+				send_notification("Recharge", "Battery is less than 10%, recharge now!", "power");
+			}
+			return bprintf("^r0,7,2,4^^r2,4,22,10^^c#000000^^r3,5,20,8^^c#ff0000^^r20,5,3,8^^d^^f24^");
+		}
+		else if (perc <= 25) {
+			sendlow = 0;
+			return bprintf("^r0,7,2,4^^r2,4,22,10^^c#000000^^r3,5,20,8^^c#f06000^^r17,5,6,8^^d^^f24^");
+		}
+		else if (perc <= 50) 
+			return bprintf("^r0,7,2,4^^r2,4,22,10^^c#000000^^r3,5,20,8^^c#ffff00^^r14,5,9,8^^d^^f24^");
+		else if (perc <= 75){
+			return bprintf("^r0,7,2,4^^r2,4,22,10^^c#000000^^r3,5,20,8^^c#ffffff^^r10,5,13,8^^d^^f24^");
+		}
+		else if (perc < 97){
+			sendhigh = 0;
+			return bprintf("^r0,7,2,4^^r2,4,22,10^^c#000000^^r3,5,20,8^^c#ffffff^^r7,5,16,8^^d^^f24^");
+		}
 		return bprintf("Error");
 	}
 
@@ -63,7 +98,17 @@
 		if (pscanf(path, "%d", &perc) != 1) {
 			return NULL;
 		}
-		return bprintf("%d", perc);
+
+                int color = 0;
+                if(perc <= 25)
+                        color = 0xff0000;
+                else if (perc <= 50)
+                        color = 0xf0f000;
+                else if (perc <= 75)
+                        color = 0xffffff;
+                else color = 0xff000;
+
+                return bprintf("^c#%06x^%2d%%^d^", color, perc);
 	}
 
 	const char *

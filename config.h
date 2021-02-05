@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* interval between updates (in ms) */
-const unsigned int interval = 1000;
+const unsigned int interval = 500;
 
 /* text to show if no value can be retrieved */
 static const char unknown_str[] = "n/a";
@@ -62,19 +62,22 @@ static const char unknown_str[] = "n/a";
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  */
 static const struct arg args[] = {
-	/* function format          argument */
-//	{ vol_perc,     "Vol: %s | "  ,    "alsa_output.pci-0000_04_00.6.analog-stereo"},
-	{ keyboard_indicators, "%s",         "c?n?"},
-	{ backlight,    "[  %s%% ] ",         "amdgpu_bl0"},
-	{ run_command,  "[  %s ] ",             "pamixer --get-volume-human"},
-	{ cpu_perc,	"[  %s%% ] ",	         ""},
-	{ temp,         "[  %s°C ] ",        "/sys/class/thermal/thermal_zone0/temp"},
-	{ ram_perc,     "[  %s%% ",             ""},
-	{ ram_used,     "%s/",                 ""},
-	{ ram_total,    "%s ] ",               ""},
-	{ wifi_print_preatty, "%s", 	     "wlan0"},
-	{ battery_icon, "[ %s",                "BAT0"},
-	{ battery_perc,	"%s%% ",             "BAT0"}, 
-	{ battery_state," %s ] ",            "BAT0"},
-	{ datetime, 	"[ %s ]", 	      "%F %T"},
+	/* function             format                          argument */
+	{ keyboard_indicators,  "%s",                           "c?n?"},
+	{ keymap,               "^b#d31b1e^^c#000000^ %s ^d^",                        ""}, 
+	{ backlight,            "^b#e27602^^c#000000^ 󰖨 %2s%% ",                   "amdgpu_bl0"},
+	{ vol_perc,          "| %s ^d^",                           ""},
+	{ cpu_print,            "^b#020002^ %s",                           ""},
+	{ temp,                 "| %s°C ",                    "/sys/class/thermal/thermal_zone0/temp"},
+	{ ram_print,            "%s",                           ""},
+	{ ram_used,             "%s/",                          ""},
+	{ ram_total,            "%s |",                         ""},
+
+	{ disk_used,	        "^c#2eddc9^ 󰋊 %s/",                       "/"},
+	{ disk_total,	        "%s ^d^",	                        "/"},
+	{ kernel_release,	"^b#6b1826^ 󰣇 %s ^d^",             ""},
+	{ wifi_print_preatty,   "^b#104cce^^c#000000^%s^d^", 	                        "wlan0"},
+	{ battery_perc,	        " %s",                       "BAT0"}, 
+	{ battery_icon,         " %s |",                        "BAT0"},
+	{ datetime, 	        "^b#000000^^c#789abc^ %s |",                        "(%a) %d %b %Y %H:%M:%S"},
 };

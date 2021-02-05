@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdio.h>
-
+#include <stdlib.h>
 #include "../util.h"
 
 #if defined(__linux__)
@@ -22,7 +22,7 @@
 		return fmt_human(free * 1024, 1024);
 	}
 
-	const char *
+	const int 
 	ram_perc(void)
 	{
 		uintmax_t total, free, buffers, cached;
@@ -34,15 +34,17 @@
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
-			return NULL;
+			return 0;
 		}
 
 		if (total == 0) {
-			return NULL;
+			return 0;
 		}
 
-		return bprintf("%d", 100 * ((total - free) - (buffers + cached))
-                               / total);
+	//	return bprintf("%d", 100 * ((total - free) - (buffers + cached))
+        //                     / total);
+		const int perc = 100 * ((total - free) - (buffers + cached)) / total;
+		return perc;
 	}
 
 	const char *
@@ -76,6 +78,22 @@
 		return fmt_human((total - free - buffers - cached) * 1024,
 		                 1024);
 	}
+
+	const char *
+	ram_print(void)
+	{
+		const int perc = ram_perc();
+                int color = 0;
+                if(perc <= 25)
+                        color = 0x00ff00;
+                else if (perc <= 50)
+                        color = 0xb0f000;
+                else if (perc <= 75)
+                        color = 0x700000;
+                else color = 0xff000;
+                return bprintf("| ^c#%06x^ %2d%% ", color, perc);
+	}
+
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
 	#include <sys/sysctl.h>
