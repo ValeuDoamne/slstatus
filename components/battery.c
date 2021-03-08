@@ -11,8 +11,8 @@
 	#include <unistd.h>
 
 
-static int sendlow = 0;
-static int sendhigh = 0;
+	static int sendlow = 0;
+	static int sendhigh = 0;
 
 
 	void
@@ -88,7 +88,7 @@ static int sendhigh = 0;
 	const char *
 	battery_perc(const char *bat)
 	{
-		int perc;
+		int perc, color = 0;
 		char path[PATH_MAX];
 
 		if (esnprintf(path, sizeof(path),
@@ -99,14 +99,15 @@ static int sendhigh = 0;
 			return NULL;
 		}
 
-                int color = 0;
-                if(perc <= 25)
+                if (perc <= 25) {
                         color = 0xff0000;
-                else if (perc <= 50)
+		} else if (perc <= 50) {
                         color = 0xf0f000;
-                else if (perc <= 75)
+		} else if (perc <= 75) {
                         color = 0xffffff;
-                else color = 0xff000;
+		} else {
+			color = 0xff000;
+		}
 
                 return bprintf("^c#%06x^%2d%%^d^", color, perc);
 	}
@@ -118,8 +119,8 @@ static int sendhigh = 0;
 			char *state;
 			char *symbol;
 		} map[] = {
-			{ "Charging",    "" },
-			{ "Discharging", "" },
+			{ "Charging",    "󱐋" },
+			{ "Discharging", "󱐌" },
 			{ "Not", "" },
 		};
 		size_t i;

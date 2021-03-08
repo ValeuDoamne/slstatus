@@ -78,6 +78,7 @@ static const struct arg args[] = {
 	{ kernel_release,	"^b#6b1826^ 󰣇 %s ^d^",             ""},
 	{ wifi_print_preatty,   "^b#104cce^^c#000000^%s^d^", 	                        "wlan0"},
 	{ battery_perc,	        " %s",                       "BAT0"}, 
-	{ battery_icon,         " %s |",                        "BAT0"},
-	{ datetime, 	        "^b#000000^^c#789abc^ %s |",                        "(%a) %d %b %Y %H:%M:%S"},
+	{ battery_icon,         " %s ",                        "BAT0"},
+	{ battery_state,         " %s |",                        "BAT0"},
+	{ datetime, 	        "^b#000000^^c#14a4e2^ %s ^d^|",                        "(%a) %d %b %Y %H:%M:%S"},
 };
