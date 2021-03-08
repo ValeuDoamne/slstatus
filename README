@@ -26,7 +26,7 @@ Features
 - Swap status (free swap, percentage, total swap and used swap)
 - Temperature
 - Uptime
-- Volume percentage (OSS/ALSA)
+- Volume percentage and muted status (OSS/ALSA)
 - WiFi signal percentage and ESSID
 
 
@@ -58,6 +58,3 @@ slstatus can be customized by creating a custom config.h and (re)compiling the
 source code. This keeps it fast, secure and simple.
 
 
-Todo
-----
-Make pulseaudio to display the master volume without a third party program.
