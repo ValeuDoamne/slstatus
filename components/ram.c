@@ -91,7 +91,7 @@
                 else if (perc <= 75)
                         color = 0x700000;
                 else color = 0xff000;
-                return bprintf("| ^c#%06x^ %2d%% ", color, perc);
+                return bprintf("^d^^b#000000^|^c#%06x^ 󰍛 %2d%% ", color, perc);
 	}
 
 #elif defined(__OpenBSD__)

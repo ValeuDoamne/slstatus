@@ -119,9 +119,9 @@
 			char *state;
 			char *symbol;
 		} map[] = {
-			{ "Charging",    "󱐋" },
-			{ "Discharging", "󱐌" },
-			{ "Not", "" },
+			{ "Charging",    "^c#e7eb1a^󱐋^d^" },
+			{ "Discharging", "^c#e7eb1a^󱐌^d^" },
+			{ "Not", "^c#ffffff^^d^" },
 		};
 		size_t i;
 		char path[PATH_MAX], state[12];
